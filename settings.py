@@ -147,6 +147,38 @@ METRICS_CONFIG = {
     },
 }
 
+if os.getenv("CONSUMER_KAFKA_USERNAME") and os.getenv(
+    "CONSUMER_KAFKA_PASSWORD"
+):
+    CONSUMER_CONFIG["PARAMS"]["security.protocol"] = "SASL_SSL"
+    CONSUMER_CONFIG["PARAMS"]["sasl.mechanism"] = "SCRAM-SHA-512"
+    CONSUMER_CONFIG["PARAMS"]["sasl.username"] = os.getenv(
+        "CONSUMER_KAFKA_USERNAME"
+    )
+    CONSUMER_CONFIG["PARAMS"]["sasl.password"] = os.getenv(
+        "CONSUMER_KAFKA_PASSWORD"
+    )
+if os.getenv("PRODUCER_KAFKA_USERNAME") and os.getenv(
+    "PRODUCER_KAFKA_PASSWORD"
+):
+    PRODUCER_CONFIG["PARAMS"]["security.protocol"] = "SASL_SSL"
+    PRODUCER_CONFIG["PARAMS"]["sasl.mechanism"] = "SCRAM-SHA-512"
+    PRODUCER_CONFIG["PARAMS"]["sasl.username"] = os.getenv(
+        "PRODUCER_KAFKA_USERNAME"
+    )
+    PRODUCER_CONFIG["PARAMS"]["sasl.password"] = os.getenv(
+        "PRODUCER_KAFKA_PASSWORD"
+    )
+if os.getenv("METRICS_KAFKA_USERNAME") and os.getenv("METRICS_KAFKA_PASSWORD"):
+    METRICS_CONFIG["PARAMS"]["PARAMS"]["security.protocol"] = "SASL_SSL"
+    METRICS_CONFIG["PARAMS"]["PARAMS"]["sasl.mechanism"] = "SCRAM-SHA-512"
+    METRICS_CONFIG["PARAMS"]["PARAMS"]["sasl.username"] = os.getenv(
+        "METRICS_KAFKA_USERNAME"
+    )
+    METRICS_CONFIG["PARAMS"]["PARAMS"]["sasl.password"] = os.getenv(
+        "METRICS_KAFKA_PASSWORD"
+    )
+
 # Step Configuration
 STEP_CONFIG = {
     "DB_CONFIG": DB_CONFIG,
