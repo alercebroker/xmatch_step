@@ -1,2 +1,36 @@
+[tool.poetry]
+name = "xmatch_step"
+version = "1.0.0"
+description = "XMatch Step"
+authors = []
+readme = "README.md"
+packages = [{include = "xmatch_step"}]
+
+[tool.poetry.dependencies]
+python = ">=3.7.1,<3.9"
+apf-base = ">=2.4.2,<2.5.0"
+astropy = "4.0.6"
+requests = "2.31.0"
+pandas = "1.3.5"
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.3.0"
+
+[tool.poetry.group.test.dependencies]
+coverage = "^7.2.7"
+cython = "^0.29.35"
+numpy = "1.21.6"
+psycopg2-binary = "^2.9.6"
+pytest = "^7.3.1"
+pytest-cov = "^4.1.0"
+pytest-docker = "^1.0.1"
+
 [tool.black]
-line-length = 79
+line-length = 88
+
+[tool.pytest.ini_options]
+addopts = "-x -s"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
