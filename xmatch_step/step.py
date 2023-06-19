@@ -150,7 +150,9 @@ class XmatchStep(GenericStep):
 
         if len(input_catalog) == 0:
             # "super fail case"
-            return [], pd.DataFrame(columns=["ra_in", "dec_in", "col1", "aid_in"])
+            return [], pd.DataFrame(
+                columns=["ra_in", "dec_in", "col1", "aid_in"]
+            )
 
         # rename columns of meanra and meandec to (ra, dec)
         input_catalog.rename(
