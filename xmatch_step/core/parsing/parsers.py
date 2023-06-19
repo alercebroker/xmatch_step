@@ -15,19 +15,21 @@ def parse_output(lightcurves: pd.DataFrame, xmatches: pd.DataFrame, lc: dict):
     xmatches = xmatches.drop(
         columns=["ra_in", "dec_in", "col1", "aid_in"],
     )
-    xmatches.replace({np.nan: None}, inplace=True)
-    xmatches = pd.DataFrame(
-        {
-            "aid_in": aid_in,  # change to aid name for multi stream
-            "xmatches": xmatches.apply(
-                lambda x: None if x is None else {"allwise": x.to_dict()},
-                axis=1,
-            ),
-        }
-    )
-    # Join metadata with xmatches
-    xmatches.rename(columns={"aid_in": "aid"}, inplace=True)
-    data = lightcurves.set_index("aid").join(xmatches.set_index("aid"))
+    data = lightcurves.set_index("aid")
+    if not aid_in.empty:
+        xmatches.replace({np.nan: None}, inplace=True)
+        xmatches = pd.DataFrame(
+            {
+                "aid_in": aid_in,  # change to aid name for multi stream
+                "xmatches": xmatches.apply(
+                    lambda x: None if x is None else {"allwise": x.to_dict()},
+                    axis=1,
+                ),
+            }
+        )
+        # Join metadata with xmatches
+        xmatches.rename(columns={"aid_in": "aid"}, inplace=True)
+        data = data.join(xmatches.set_index("aid"))
 
     data.replace({np.nan: None}, inplace=True)
     data.reset_index(inplace=True)
