@@ -63,7 +63,8 @@ XMATCH_CONFIG = {
             "Kmag",
             "e_Kmag",
         ],
-    }
+    },
+    "SKIP_XMATCH": False
 }
 
 
