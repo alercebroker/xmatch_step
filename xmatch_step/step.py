@@ -155,7 +155,7 @@ class XmatchStep(GenericStep):
         if len(input_catalog) == 0:
             # "super fail case"
             return [], pd.DataFrame.from_records([])
-        
+
         # rename columns of meanra and meandec to (ra, dec)
         input_catalog.rename(
             columns={"meanra": "ra", "meandec": "dec"}, inplace=True
@@ -168,7 +168,7 @@ class XmatchStep(GenericStep):
         else:
             self.logger.info("Getting xmatches")
             xmatches = self.request_xmatch(input_catalog, self.retries)
-            
+
         # Get output format
         # output_messages = parse_output(light_curves, xmatches, lc_hash)
         return light_curves, xmatches
