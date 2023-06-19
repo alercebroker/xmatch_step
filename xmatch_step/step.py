@@ -140,10 +140,6 @@ class XmatchStep(GenericStep):
         """
         self.logger.info(f"Processing {len(messages)} light curves")
 
-        if self.xmatch_config["SKIP_XMATCH"] == True:
-            self.logger.info("Skipping Xmatch")
-            return messages, pd.DataFrame.from_records([])
-
         self._lc_hash = extract_detections_from_messages(messages)
 
         light_curves = pd.DataFrame.from_records(
