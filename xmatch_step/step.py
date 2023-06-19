@@ -75,6 +75,7 @@ class XmatchStep(GenericStep):
             )
             return message
 
+        result = parse_output(result[0], result[1], self._lc_hash)
         return list(map(_add_non_detection, result))
 
     def request_xmatch(
@@ -139,31 +140,35 @@ class XmatchStep(GenericStep):
         """
         self.logger.info(f"Processing {len(messages)} light curves")
 
-        lc_hash = extract_detections_from_messages(messages)
+        self._lc_hash = extract_detections_from_messages(messages)
 
         light_curves = pd.DataFrame.from_records(
             messages, exclude=["detections", "non_detections"]
         )
         light_curves.drop_duplicates(["aid"], keep="last", inplace=True)
-
         input_catalog = light_curves[["aid", "meanra", "meandec"]]
 
         if len(input_catalog) == 0:
+            # "super fail case"
             return [], pd.DataFrame.from_records([])
+
         # rename columns of meanra and meandec to (ra, dec)
         input_catalog.rename(
             columns={"meanra": "ra", "meandec": "dec"}, inplace=True
         )
 
-        self.logger.info("Getting xmatches")
-        xmatches = self.request_xmatch(input_catalog, self.retries)
+        xmatches = pd.DataFrame.from_records([])
+
+        if self.xmatch_config["SKIP_XMATCH"]:
+            self.logger.info("Skipping xmatch. SKIP_XMATCH is set to true.")
+        else:
+            self.logger.info("Getting xmatches")
+            xmatches = self.request_xmatch(input_catalog, self.retries)
+
         # Get output format
-        output_messages = parse_output(light_curves, xmatches, lc_hash)
-        del messages
-        del light_curves
-        del input_catalog
-        return output_messages, xmatches
+        # output_messages = parse_output(light_curves, xmatches, lc_hash)
+        return light_curves, xmatches
 
     def post_execute(self, result: Tuple[List[dict], pd.DataFrame]):
         self.produce_scribe(result[1])
-        return result[0]
+        return result
