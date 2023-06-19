@@ -83,6 +83,10 @@ class StepXmatchTest(unittest.TestCase):
         cls.step = XmatchStep(config=cls.step_config)
         cls.batch = generate_input_batch(20)
 
+    @classmethod
+    def set_skip_xmatch_true(cls):
+        cls.step_config["XMATCH_CONFIG"]["SKIP_XMATCH"] = True
+
     @mock.patch.object(XmatchClient, "execute")
     def test_execute(self, mock_xmatch: mock.Mock):
         mock_xmatch.return_value = get_fake_xmatch(self.batch)

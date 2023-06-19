@@ -24,3 +24,13 @@ def test_parse_output():
     assert "xmatches" in result_json[1].keys()
     assert "allwise" in result_json[0]["xmatches"].keys()
     assert "allwise" in result_json[0]["xmatches"].keys()
+
+def test_parse_output_without_xmatches():
+    lc_hash = extract_detections_from_messages(mock_lightcurves_list)
+    lightcurve_dataframe = pd.DataFrame.from_records(
+        mock_lightcurves_list, exclude=["detections", "non_detections"]
+    )
+    xmatch_dataframe = pd.DataFrame(columns=["ra_in", "dec_in", "col1", "aid_in"])
+    result_json = parse_output(lightcurve_dataframe, xmatch_dataframe, lc_hash)
+    assert len(result_json) == 2
+    assert "xmatches" not in result_json[0].keys()
