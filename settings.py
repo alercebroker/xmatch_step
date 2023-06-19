@@ -77,7 +77,8 @@ XMATCH_CONFIG = {
             "Kmag",
             "e_Kmag",
         ],
-    }
+    },
+    "SKIP_XMATCH": os.getenv("SKIP_XMATCH") == "true"
 }
 
 SCRIBE_PRODUCER_CONFIG = {
