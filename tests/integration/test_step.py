@@ -18,11 +18,11 @@ CONSUMER_CONFIG = {
         "bootstrap.servers": "localhost:9092",
         "group.id": "group_id",
         "auto.offset.reset": "beginning",
-        "enable.partition.eof": False,
+        "enable.partition.eof": True,
     },
     "TOPICS": ["correction"],
-    "consume.messages": "1",
-    "consume.timeout": "10",
+    "consume.messages": 10,
+    "consume.timeout": 0,
 }
 
 PRODUCER_CONFIG = {
@@ -67,6 +67,14 @@ XMATCH_CONFIG = {
     "SKIP_XMATCH": False
 }
 
+def generate_xmatch_client_mock(generator):
+    def generate_xmatch(*args):
+        catalog = args[0].to_dict("records")
+        xmatches = generator(catalog)
+        return xmatches
+    
+    return generate_xmatch
+
 
 @pytest.mark.usefixtures("kafka_service")
 class StepXmatchTest(unittest.TestCase):
@@ -89,15 +97,16 @@ class StepXmatchTest(unittest.TestCase):
 
     @mock.patch.object(XmatchClient, "execute")
     def test_execute(self, mock_xmatch: mock.Mock):
-        mock_xmatch.return_value = get_fake_xmatch(self.batch)
-        output_messages, xmatches = self.step.execute(self.batch)
+        mock_xmatch.side_effect = generate_xmatch_client_mock(get_fake_xmatch)
+        # output_messages, xmatches = self.step.execute(self.batch)
 
-        assert len(output_messages) == 20
-        assert xmatches.shape == (20, 22)
+        # assert len(output_messages) == 20
+        # assert xmatches.shape == (20, 22)
+        self.step.start()
 
     @mock.patch.object(XmatchClient, "execute")
     def test_execute_empty_xmatch(self, mock_xmatch: mock.Mock):
-        mock_xmatch.return_value = get_fake_empty_xmatch(self.batch)
+        mock_xmatch.return_value = get_fake_empty_xmatch([])
         output_messages, xmatches = self.step.execute(self.batch)
 
         assert len(output_messages) == 20

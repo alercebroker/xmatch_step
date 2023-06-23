@@ -139,7 +139,6 @@ class XmatchStep(GenericStep):
         :return: None
         """
         self.logger.info(f"Processing {len(messages)} light curves")
-
         self._lc_hash = extract_detections_from_messages(messages)
 
         light_curves = pd.DataFrame.from_records(

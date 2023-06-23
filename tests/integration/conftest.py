@@ -1,8 +1,10 @@
 import logging
 import os
 import pytest
+from apf.producers import KafkaProducer
 from confluent_kafka.admin import AdminClient, NewTopic
-
+from tests.data.schemas.input_schema import SCHEMA
+from tests.data.messages import generate_input_batch
 
 @pytest.fixture(scope="session")
 def docker_compose_file(pytestconfig):
@@ -38,4 +40,18 @@ def kafka_service(docker_ip, docker_services):
     docker_services.wait_until_responsive(
         timeout=30.0, pause=0.1, check=lambda: is_kafka_responsive(server)
     )
+    produce_messages("correction")
     return server
+
+def produce_messages(topic):
+    producer = KafkaProducer({
+        "PARAMS": { "bootstrap.servers": "localhost:9092" },
+        "TOPIC": topic,
+        "SCHEMA": SCHEMA
+    })
+
+    messages = generate_input_batch(20)
+    producer.set_key_field("aid")
+    
+    for message in messages:
+        producer.produce(message)
