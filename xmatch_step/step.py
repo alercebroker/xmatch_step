@@ -242,6 +242,8 @@ class XmatchStep(GenericStep):
         :return: None
         """
         self.logger.info(f"Processing {len(messages)} light curves")
+        self.produce(messages)
+        return
         light_curves = pd.DataFrame(messages)
         light_curves.drop_duplicates(
             ["aid", "candid"], keep="last", inplace=True
