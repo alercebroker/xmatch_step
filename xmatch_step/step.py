@@ -188,7 +188,7 @@ class XmatchStep(GenericStep):
         :param retries_count: number of attempts
         :return: Data with its xmatch. Data without xmatch is not included.
         """
-        self.logger.debug(input_catalog)
+        self.logger.info(input_catalog)
 
         if retries_count > 0:
             try:
