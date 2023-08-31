@@ -242,6 +242,9 @@ class XmatchStep(GenericStep):
         :return: None
         """
         self.logger.info(f"Processing {len(messages)} light curves")
+        for message in messages:
+            message["candid"] = int(message["candid"])
+            
         self.produce(messages)
         return
         light_curves = pd.DataFrame(messages)
